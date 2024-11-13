@@ -1,8 +1,17 @@
-# Import necessary libraries for file handling and re-encoding
+import os
 import re
 
-# File path for the original PGN file
-file_path = 'Laszlo Polgar Chess 5334 Problems Combinations and Games.pgn'
+# Input: PGN file name, output folder, and games per file.
+file_path = input("Enter the PGN file name (e.g., 'your_file.pgn'): ")
+output_dir = input("Enter the output directory name (e.g., 'output'): ")
+games_per_file = int(input("Enter the number of games per file (e.g., '100'): "))
+
+# Ensure the output directory exists
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+    print(f"Created output directory: {output_dir}")
+else:
+    print(f"Output directory '{output_dir}' already exists. Files will be saved there.")
 
 # Load and read the PGN file, handling non-UTF-8 characters
 with open(file_path, 'rb') as file:
@@ -15,23 +24,19 @@ decoded_content = raw_content.decode("utf-8", errors="replace")
 games = decoded_content.split("\n\n[Event ")
 games[0] = "[Event " + games[0] if not games[0].startswith("[Event") else games[0]
 
-# Update the number of games per file as requested
-games_per_file = 100
-output_files = []
-
-# Clean up any non-UTF-8 characters (replacing common encoding errors) and prepare game chunks
+# Clean up any non-UTF-8 characters and prepare game chunks
 cleaned_games = [re.sub("�", "", game) for game in games]
 
-# Process in chunks of 100 games and save each chunk to a new file
+# Process in chunks and save each chunk to a new file
+output_files = []
 for i in range(0, len(cleaned_games), games_per_file):
     chunk = cleaned_games[i:i + games_per_file]
     chunk_text = "\n\n".join(chunk)
-    # Define a relative path to output the files in the "output" folder within pgn_splitter
-    output_file_path = f"./output/Polgar_5334_Games_Part_{i // games_per_file + 1}.pgn"
+    output_file_path = os.path.join(output_dir, f"Polgar_5334_Games_Part_{i // games_per_file + 1}.pgn")
     output_files.append(output_file_path)
-
+    
     # Write the chunk to a new PGN file
     with open(output_file_path, 'w', encoding='utf-8') as output_file:
         output_file.write(chunk_text)
 
-output_files  # List of generated output files
+print("Files successfully created:", output_files)
