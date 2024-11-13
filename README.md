@@ -1,4 +1,4 @@
-# PGN Splitter
+# pgn_splittr
 
 This script splits a large PGN (Portable Game Notation) file into smaller files, each containing a specified number of games. It’s ideal for breaking down large chess databases into manageable chunks for analysis or study.
 
