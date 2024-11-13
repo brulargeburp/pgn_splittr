@@ -17,7 +17,9 @@ Place the PGN file you want to split in the pgn_splitter directory.
 Ensure the output directory exists by running:
 
 $ mkdir output
+
 Usage
+
 Edit the script: Update the file_path variable in pgn_splitter.py to match the name of your PGN file. By default, it expects a file named Laszlo Polgar Chess 5334 Problems Combinations and Games.pgn.
 
 Specify the number of games per file: Modify the games_per_file variable in the script to set how many games each output file should contain. For example:
