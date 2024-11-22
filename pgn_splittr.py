@@ -22,7 +22,7 @@ decoded_content = raw_content.decode("utf-8", errors="replace")
 
 # Split into separate games based on the PGN "[Event " tag
 games = decoded_content.split("\n\n[Event ")
-games[0] = "[Event " + games[0] if not games[0].startswith("[Event") else games[0]
+games[0] = "[Event " + games[0].lstrip("\"")  # Ensure no leading quote for the first game
 
 # Clean up any non-UTF-8 characters and prepare game chunks
 cleaned_games = [re.sub("�", "", game) for game in games]
