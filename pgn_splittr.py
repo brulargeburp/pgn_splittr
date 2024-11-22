@@ -22,15 +22,24 @@ decoded_content = raw_content.decode("utf-8", errors="replace")
 
 # Split into separate games based on the PGN "[Event " tag
 games = decoded_content.split("\n\n[Event ")
-games[0] = "[Event " + games[0].lstrip("\"")  # Ensure no leading quote for the first game
+games[0] = games[0].strip()  # Strip leading/trailing whitespace
 
-# Clean up any non-UTF-8 characters and prepare game chunks
-cleaned_games = [re.sub("�", "", game) for game in games]
+# Fix each game's `[Event` tag
+fixed_games = []
+for i, game in enumerate(games):
+    # Ensure each game starts with a proper `[Event` tag
+    if not game.startswith("[Event"):
+        game = "[Event " + game.lstrip("#").strip()
+
+    # Remove any redundant `[Event` prefix if present
+    game = re.sub(r"^\[Event\s+\[Event\s+", "[Event ", game)
+
+    fixed_games.append(game)
 
 # Process in chunks and save each chunk to a new file
 output_files = []
-for i in range(0, len(cleaned_games), games_per_file):
-    chunk = cleaned_games[i:i + games_per_file]
+for i in range(0, len(fixed_games), games_per_file):
+    chunk = fixed_games[i:i + games_per_file]
     chunk_text = "\n\n".join(chunk)
     output_file_path = os.path.join(output_dir, f"Polgar_5334_Games_Part_{i // games_per_file + 1}.pgn")
     output_files.append(output_file_path)
