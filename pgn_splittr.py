@@ -1,5 +1,18 @@
 import os
 import re
+import unicodedata
+
+# Function to clean non-UTF-8 characters
+def clean_text(text):
+    # Normalize the text to NFKD form (compatibility decomposition)
+    text = unicodedata.normalize('NFKD', text)
+    # Replace specific problematic characters
+    text = text.replace("�", "")  # Remove any lingering replacement characters
+    # Polgar mates specific example
+    text = text.replace("L�szl�", "László")  # Correct example replacement
+    text = text.replace("K�nemann", "Könemann")  # Correct example replacement
+    text = text.replace("Polg�r", "Polgár")  # Correct example replacement
+    return text
 
 # Input: PGN file name, output folder, and games per file.
 file_path = input("Enter the PGN file name (e.g., 'your_file.pgn'): ")
@@ -19,6 +32,7 @@ with open(file_path, 'rb') as file:
 
 # Decode the content, replacing non-UTF-8 characters
 decoded_content = raw_content.decode("utf-8", errors="replace")
+decoded_content = clean_text(decoded_content)  # Apply cleaning
 
 # Split into separate games based on the PGN "[Event " tag
 games = decoded_content.split("\n\n[Event ")
@@ -34,6 +48,8 @@ for i, game in enumerate(games):
     # Remove any redundant `[Event` prefix if present
     game = re.sub(r"^\[Event\s+\[Event\s+", "[Event ", game)
 
+    # Clean the text of each game
+    game = clean_text(game)
     fixed_games.append(game)
 
 # Process in chunks and save each chunk to a new file
