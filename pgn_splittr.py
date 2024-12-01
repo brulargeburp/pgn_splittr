@@ -2,16 +2,12 @@ import os
 import re
 import unicodedata
 
-# Function to clean non-UTF-8 characters
+# Function to clean non-UTF-8 characters. 
 def clean_text(text):
     # Normalize the text to NFKD form (compatibility decomposition)
     text = unicodedata.normalize('NFKD', text)
     # Replace specific problematic characters
     text = text.replace("�", "")  # Remove any lingering replacement characters
-    # Polgar mates specific example
-    text = text.replace("L�szl�", "László")  # Correct example replacement
-    text = text.replace("K�nemann", "Könemann")  # Correct example replacement
-    text = text.replace("Polg�r", "Polgár")  # Correct example replacement
     return text
 
 # Input: PGN file name, output folder, and games per file.
